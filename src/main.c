@@ -52,6 +52,7 @@ UINT filtersSize;
 filterRecord filters[CONFIG_MAX_RECORDS] = {0};
 char configBuf[CONFIG_BUF_SIZE+2]; // add some padding to write \n
 BOOL parameterized = 0; // parameterized flag, means reading args from command line
+BOOL dialogShown = 0;
 
 // loading up filters and fill in
 void loadConfig() {
@@ -317,12 +318,14 @@ static BOOL checkIsRunning() {
 
 
 static int uiOnDialogShow(Ihandle *ih, int state) {
-    // only need to process on show
+    if (dialogShown)
+        return IUP_DEFAULT;
+    dialogShown = 1;
+
     HWND hWnd;
     BOOL exit;
     HICON icon;
     HINSTANCE hInstance;
-    if (state != IUP_SHOW) return IUP_DEFAULT;
     hWnd = (HWND)IupGetAttribute(ih, "HWND");
     hInstance = GetModuleHandle(NULL);
 
